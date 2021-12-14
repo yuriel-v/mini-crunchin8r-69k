@@ -18,6 +18,10 @@ class Crunchinator69k:
     def files(self):
         return self.__files
 
+    @property
+    def dataframe(self):
+        return self.__cruncher.global_df
+
     # Private
     def __fetch_files(self) -> tuple[str]:
         """
@@ -30,7 +34,27 @@ class Crunchinator69k:
         )
 
     # Public
-    def refresh_files(self) -> tuple(str):
+    def dprint(self, msg: str):  # "debug print"
+        """Prints if in verbose mode."""
+        if self.verbose:
+            print(msg)
+
+    def refresh_files(self) -> tuple[str]:
         """Refreshes the internal file listing and returns it."""
         self.__files = self.__fetch_files()
         return self.files
+
+    def crunch(self) -> None:
+        """Processes ("crunches") the data in the files pointed by the `files` property."""
+        self.__cruncher.compose(self.__files)
+
+    def to_excel(self, filepath_with_name: str) -> None:
+        """Prints the current global dataframe to an Excel file."""
+        # TODO: Fix this (maybe?), doesn't work with .xls files at the moment
+        self.__cruncher.global_df.to_excel(filepath_with_name, na_rep="N/A", float_format="%.3f")
+
+    def process(self, filepath_with_name: str):
+        """High-level interface function that fetches files, crunches data and prints to excel, all in one."""
+        self.refresh_files()
+        self.crunch()
+        self.to_excel(filepath_with_name)
