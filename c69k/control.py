@@ -54,7 +54,7 @@ class Crunchinator69k:
         if not filepath_with_name.lower().endswith('.xlsx'):
             filepath_with_name += ".xlsx"
 
-        self.__cruncher.global_df.sort_values(by="Sample Name").to_excel(filepath_with_name, na_rep="N/A", float_format="%.3f", index=False)
+        self.__cruncher.global_df.sort_values(by="Sample Name").to_excel(filepath_with_name, float_format="%.3f", index=False)
 
     def process(self, filepath_with_name: str):
         """High-level interface function that fetches files, crunches data and prints to excel, all in one."""
