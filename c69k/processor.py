@@ -23,22 +23,38 @@ class Processor69k:
         for sample in samples:
             value_delim = "="
             pair_delim = ";"
-            new_row = {"Sample Name": sample}
+            try:
+                new_row = self.global_df.loc[self.global_df["Sample Name"] == sample]
+                if new_row.empty:
+                    new_row = {"Sample Name": sample}
+            except Exception:
+                new_row = {"Sample Name": sample}
 
+            # TODO: Simplify the code below, preferrably splitting segments of it into different methods
             for target in targets:
                 subset = df.loc[(df["Sample Name"] == sample) & (df["Target Name"] == target)]
 
                 for col in self.__relevant_columns["constant"]:
-                    new_row[f"{col}-{target}"] = subset.iloc[0][col]
+                    if isinstance(new_row, dict):
+                        new_row[f"{col}-{target}"] = subset.iloc[0][col]
+                    else:
+                        self.global_df.loc[self.global_df["Sample Name"] == sample, f"{col}-{target}"] = subset.iloc[0][col]
 
                 for col in self.__relevant_columns["variable"]:
-                    new_row[f"{col}-{target}"] = pair_delim.join([
-                        f'{subset.iloc[x]["Well Position"]}{value_delim}{subset.iloc[x][col]}'
-                        for x in range(len(subset))
-                    ])
-                    # ex. {"CT-ibeA": "A1=1.22;A2=2.44", "Quantity-ibeA": "A1=3.66;A2=3.66"}
+                    if isinstance(new_row, dict):
+                        new_row[f"{col}-{target}"] = pair_delim.join([
+                            f'{subset.iloc[x]["Well Position"]}{value_delim}{subset.iloc[x][col]}'
+                            for x in range(len(subset))
+                        ])
+                        # ex. {"CT-ibeA": "A1=1.22;A2=2.44", "Quantity-ibeA": "A1=3.66;A2=3.66"}
+                    else:
+                        self.global_df.loc[self.global_df["Sample Name"] == sample, f"{col}-{target}"] = pair_delim.join([
+                            f'{subset.iloc[x]["Well Position"]}{value_delim}{subset.iloc[x][col]}'
+                            for x in range(len(subset))
+                        ])
 
-            self.global_df = self.global_df.append(new_row, ignore_index=True)
+            if isinstance(new_row, dict):
+                self.global_df = self.global_df.append(new_row, ignore_index=True)
 
     # Public
     def dprint(self, msg: str):  # "debug print"

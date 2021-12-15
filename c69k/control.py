@@ -51,7 +51,10 @@ class Crunchinator69k:
     def to_excel(self, filepath_with_name: str) -> None:
         """Prints the current global dataframe to an Excel file."""
         # TODO: Fix this (maybe?), doesn't work with .xls files at the moment
-        self.__cruncher.global_df.to_excel(filepath_with_name, na_rep="N/A", float_format="%.3f")
+        if not filepath_with_name.lower().endswith('.xlsx'):
+            filepath_with_name += ".xlsx"
+
+        self.__cruncher.global_df.sort_values(by="Sample Name").to_excel(filepath_with_name, na_rep="N/A", float_format="%.3f", index=False)
 
     def process(self, filepath_with_name: str):
         """High-level interface function that fetches files, crunches data and prints to excel, all in one."""
