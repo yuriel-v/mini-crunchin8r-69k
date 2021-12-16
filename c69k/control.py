@@ -23,7 +23,7 @@ class Crunchinator69k:
         return self.__cruncher.global_df
 
     # Private
-    def __fetch_files(self) -> tuple[str]:
+    def __fetch_files(self) -> "tuple[str]":
         """
         Generates a tuple of absolute paths for every .xls file in the
         `self.__path` directory.
@@ -39,16 +39,16 @@ class Crunchinator69k:
         if self.verbose:
             print(msg)
 
-    def refresh_files(self) -> tuple[str]:
+    def refresh_files(self) -> "tuple[str]":
         """Refreshes the internal file listing and returns it."""
         self.__files = self.__fetch_files()
         return self.files
 
-    def crunch(self) -> None:
+    def crunch(self):
         """Processes ("crunches") the data in the files pointed by the `files` property."""
         self.__cruncher.compose(self.__files)
 
-    def to_excel(self, filepath_with_name: str) -> None:
+    def to_excel(self, filepath_with_name: str):
         """Prints the current global dataframe to an Excel file."""
         # TODO: Fix this (maybe?), doesn't work with .xls files at the moment
         if not filepath_with_name.lower().endswith('.xlsx'):

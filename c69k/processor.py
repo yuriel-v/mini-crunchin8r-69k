@@ -62,7 +62,7 @@ class Processor69k:
         if self.verbose:
             print(msg)
 
-    def compose(self, file: Union[str, Iterable]) -> None:
+    def compose(self, file: Union[str, Iterable]):
         """
         Composes the global dataframe, extracting information from the file(s)
         given in `file`.
