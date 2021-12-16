@@ -2,14 +2,16 @@ import os
 import re
 
 from glob import glob
+from pathlib import Path
+from typing import Union
 
 from c69k.processor import Processor69k
 
 
 class Crunchinator69k:
-    def __init__(self, path: str, verbose: bool = True):
+    def __init__(self, path: Union[str, Path], verbose: bool = True):
         self.verbose = verbose
-        self.__path = os.path.abspath(re.sub(r"\\|/$", "", path))
+        self.__path = path if isinstance(path, Path) else Path(re.sub(r"\\|/$", "", path)).resolve()
         self.__files = self.__fetch_files()
         self.__cruncher = Processor69k()
 
@@ -28,9 +30,9 @@ class Crunchinator69k:
         Generates a tuple of absolute paths for every .xls file in the
         `self.__path` directory.
         """
-        slash = '/' if '/' in self.__path else '\\'
+        slash = '/' if '/' in str(self.__path) else '\\'
         return tuple(
-            os.path.abspath(x) for x in glob(f"{self.__path}{slash}*.xls", recursive=False)
+            Path(x).resolve() for x in glob(f"{self.__path}{slash}*.xls", recursive=False)
             if re.split(r"\\|/", str(x))[-1][0].isalnum()  # if filename first char is alphanumeric
         )
 
