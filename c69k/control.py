@@ -28,8 +28,9 @@ class Crunchinator69k:
         Generates a tuple of absolute paths for every .xls file in the
         `self.__path` directory.
         """
+        slash = '/' if '/' in self.__path else '\\'
         return tuple(
-            os.path.abspath(x) for x in glob(f"{self.__path}/*.xls", recursive=False)
+            os.path.abspath(x) for x in glob(f"{self.__path}{slash}*.xls", recursive=False)
             if re.split(r"\\|/", str(x))[-1][0].isalnum()  # if filename first char is alphanumeric
         )
 
